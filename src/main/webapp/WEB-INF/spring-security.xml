@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns:b="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/security 
+	http://www.springframework.org/schema/security/spring-security.xsd
+	http://www.springframework.org/schema/context
+ 	http://www.springframework.org/schema/context/spring-context-4.0.xsd"
+ 	xmlns:context="http://www.springframework.org/schema/context">
+
+
+<!--  For use @Secured in controllers
+<global-method-security pre-post-annotations="enabled" secured-annotations="enabled" />
+
+ <context:component-scan base-package="com.service" />
+-->
+	<http pattern="/css/**" security="none" />
+
+	<http auto-config="true" use-expressions="true" disable-url-rewriting="false">
+    <csrf disabled="true"/>
+    
+    <access-denied-handler error-page="/403" />
+	<!-- <http disable-url-rewriting="false" >
+		<headers disabled="true"/>
+		<csrf disabled="true"/>
+ -->
+
+        <!-- OLD
+        <intercept-url pattern="/sec/moderation.html" access="ROLE_MODERATOR">
+		<intercept-url pattern="/admin/*" access="ROLE_ADMIN">
+		-->
+
+		<intercept-url pattern="/login" access="permitAll"/> 
+		<intercept-url pattern="/hello" access="permitAll"/> 
+		<intercept-url pattern="/home" access="permitAll"/> 
+		
+		<intercept-url pattern="/people" access="permitAll"/> 
+		
+		
+		<intercept-url pattern="/index" access="hasAnyRole('ROLE_ADMIN','ROLE_MODERATOR')"/> 
+		<!-- <intercept-url pattern="/**" access="hasRole('USER')"/> 
+		<intercept-url pattern="/**" access="hasRole('ADMIN')"/>-->
+	
+		<intercept-url pattern="/add" access="hasRole('ROLE_MODERATOR')"/>
+		
+	
+		<intercept-url pattern="/sec/moderation.html" access="hasRole('ROLE_MODERATOR')"/>
+		
+		
+		<!--  Without @Secured -->
+		 <intercept-url pattern="/admin/*" access="hasRole('ROLE_ADMIN')"/>
+		
+		
+		<form-login login-page="/login"
+		authentication-failure-url ="/login?login_error=1" 
+		login-processing-url="/j_spring_security_check" 
+		default-target-url = "/people"/>
+		<logout logout-url="/j_spring_security_logout"/>
+	</http>
+	
+	<context:component-scan base-package="com.service" />
+	
+	<b:bean id = "CustomUserDetailsService" class = "com.service.CustomUserDetailsService"/>
+	
+	<authentication-manager>
+        <authentication-provider user-service-ref="CustomUserDetailsService">
+            <password-encoder hash="plaintext">
+        </password-encoder></authentication-provider>
+    </authentication-manager>
+
+	<!-- 
+	<authentication-provider>
+		<jdbc-user-service data-source-ref="dataSource"
+		  users-by-username-query=
+		    "select login username,password, 1=1 as enabled from users where login=?"
+		  authorities-by-username-query=
+		"select login username, role from users, user_roles, roles WHERE users.id=
+		user_roles.user_id AND USER_ROLES.ROLE_ID=roles.id and login =?" />
+	  <intercept-url pattern="/add" access="hasRole('MODERATOR')
+	  </authentication-provider>
+	
+	 <global-method-security pre-post-annotations="enabled" />-->
+
+	<!--<b:bean class="sample.HelloWorldMessageService" />
+
+	<b:bean class="sample.Sec2919PostProcessor" />
+ -->
+</b:beans>
+
+ 

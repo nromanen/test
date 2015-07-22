@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xmlns:b="http://www.springframework.org/schema/beans"
+ xmlns:context="http://www.springframework.org/schema/context"
+ xmlns:p="http://www.springframework.org/schema/p"
+ xmlns:tx="http://www.springframework.org/schema/tx"
+ xmlns:mvc="http://www.springframework.org/schema/mvc"
+ 
+ xsi:schemaLocation="
+ http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+ http://www.springframework.org/schema/security 
+	http://www.springframework.org/schema/security/spring-security.xsd
+ http://www.springframework.org/schema/tx 
+ http://www.springframework.org/schema/tx/spring-tx.xsd 
+ http://www.springframework.org/schema/context
+ http://www.springframework.org/schema/context/spring-context-4.0.xsd
+ http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+<mvc:resources mapping="/resources/**" location="/web-resources/" />
+<mvc:resources mapping="/assets/**" location="classpath:/META-INF/resources/webjars/"/>
+    
+
+<mvc:default-servlet-handler />
+<mvc:annotation-driven/>
+
+ <context:component-scan base-package="com.controller" />
+ <context:component-scan base-package="com.service" />
+ <context:component-scan base-package="com.dao" />
+
+<global-method-security pre-post-annotations="enabled" secured-annotations="enabled" />
+
+ 
+ <b:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+ <b:property name="prefix">
+   <b:value>/WEB-INF/views/</b:value>
+ </b:property>
+ <b:property name="suffix">
+    <b:value>.jsp</b:value>
+ </b:property>
+  </b:bean>
+
+   
+  <!-- Classpath scanning of @Component, @Service, etc annotated class 
+  <context:component-scan base-package="hello" />-->
+   
+  <!-- Resolve view name into jsp file located on /WEB-INF -->
+  <b:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <b:property name="prefix" value="/WEB-INF/" />
+    <b:property name="suffix" value=".jsp" />
+  </b:bean>
+   
+  
+  
+  <!-- MySQL Datasource with Commons DBCP connection pooling 
+    <bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+    <property name="url" value="jdbc:mysql://localhost:3306/menu"/>
+    <property name="username" value="root"/>
+    <property name="password" value="root"/>
+  </bean>-->
+  
+    <b:bean id="persistenceUnitManager" class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+        <b:property name="persistenceXmlLocations">
+            <b:list>
+                <b:value>classpath*:META-INF/persistence.xml</b:value>
+            </b:list>
+        </b:property>
+        <b:property name="defaultDataSource" ref="dataSource"/>
+    </b:bean>
+
+
+  
+   <!-- EntityManagerFactory  -->
+
+    <b:bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <b:property name="persistenceUnitManager" ref="persistenceUnitManager"/>
+        <b:property name="persistenceUnitName" value="persistence"/>
+    </b:bean>
+   
+  <!-- Transaction Manager --> 
+    <b:bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <b:property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </b:bean>
+    
+        <context:property-placeholder location="classpath:jdbc.properties"/>
+
+
+    <!-- dataSource bean -->
+    <b:bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+          p:driverClassName="${jdbc.driverClassName}" 
+          p:url="${jdbc.url}"
+          p:username="${jdbc.username}" 
+          p:password="${jdbc.password}"/>
+
+<!-- 		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="driverClassName" value="${jdbc.driverClassName}"/>
+			<property name="url" value="${jdbc.url}"/>
+			<property name="username" value="${jdbc.username}"/>
+			<property name="password" value="${jdbc.password}"/>
+		</bean>  -->
+    
+       
+<!--   Enable annotation-based Spring MVC controllers (eg: @Controller annotation) 
+  <mvc:annotation-driven/>
+ Enable @Transactional annotation 
+  <tx:annotation-driven/>-->
+  
+  <tx:annotation-driven transaction-manager="transactionManager" />
+ 
+ <b:bean id="messageSource"
+        class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <b:property name="basename" value="classpath:messages" />
+        <b:property name="defaultEncoding" value="UTF-8" />
+    </b:bean>
+ 
+    <b:bean id="localeResolver"
+        class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <b:property name="defaultLocale" value="ua" />
+        <b:property name="cookieName" value="myAppLocaleCookie"></b:property>
+        <b:property name="cookieMaxAge" value="3600"></b:property>
+    </b:bean>
+ 
+    <mvc:interceptors>
+        <b:bean
+            class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <b:property name="paramName" value="locale" />
+        </b:bean>
+    </mvc:interceptors>
+ 
+
+</b:beans>
