@@ -21,6 +21,7 @@ public class User {
 	
 	private String password;
 	
+	
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinTable(name="user_roles",
 		joinColumns = {@JoinColumn(name="user_id", referencedColumnName="id")},

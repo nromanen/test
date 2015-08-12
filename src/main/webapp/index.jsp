@@ -20,6 +20,15 @@
 		<h1>
 			<a href="people.html">Click here if you want to work with Person table </a>
 		</h1>
+		
+		<br/>
+		or
+		<br/>
+		
+		<h1>
+			<a href="rest.html">with Academy Groups ;) </a>
+		</h1>
+		
 	</div>
 </body>
 </html>

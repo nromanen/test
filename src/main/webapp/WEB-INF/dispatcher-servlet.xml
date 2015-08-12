@@ -130,6 +130,23 @@
             <b:property name="paramName" value="locale" />
         </b:bean>
     </mvc:interceptors>
+    
+    <!-- Configure to plugin JSON as request and response in method handler -->
+    <b:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <b:property name="messageConverters">
+            <b:list>
+                <b:ref bean="jsonMessageConverter"/>
+            </b:list>
+        </b:property>
+    </b:bean>
+     
+    <!-- Configure bean to convert JSON to POJO and vice versa -->
+    <b:bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+    </b:bean>
+    
+    <b:bean name="viewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+    <b:bean name="jsonTemplate" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+ 
  
 
 </b:beans>

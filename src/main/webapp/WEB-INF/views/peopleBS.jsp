@@ -22,21 +22,30 @@
 
 <h3 class="panel-header"> <spring:message
                                 code="label.title" /> ${principal.username}</h3>
-         <form:form method="post" action="add" modelAttribute="person" class="form-vertical">
+         <form:form method="post" action="add" modelAttribute="student" class="form-vertical">
          <div id = "gridContainer">
             <div class = "row grid-row">
-            <div class = "col-sm-3"><form:label path="firstName">First Name</form:label></div>
-            <div class = "col-sm-3"> <form:label path="lastName">Last Name</form:label></div>
-            <div class = "col-sm-3"><form:label path="Money">Money</form:label></div>
+            <div class = "col-sm-3"><form:label path="person.firstName">First Name</form:label></div>
+            <div class = "col-sm-3"> <form:label path="person.lastName">Last Name</form:label></div>
+            <div class = "col-sm-3"><form:label path="person.Money">Money</form:label></div>
+            <div class = "col-sm-3"><form:label path="groupId">Group</form:label></div>
             </div>
             </div>
             <div id = "gridContainer">
             <div class = "row grid-row">
-            <div class = "col-sm-3"><form:input path="firstName" /></div>
-            <div class = "col-sm-3"> <form:input path="lastName" /></div>
-            <div class = "col-sm-3"> <form:input path="Money" /></div>
+            <div class = "col-sm-3"><form:input path="person.firstName" /></div>
+            <div class = "col-sm-3"> <form:input path="person.lastName" /></div>
+            <div class = "col-sm-3"> <form:input path="person.Money" /></div>
+            <div class = "col-sm-3"><form:select path="groupId">
+					  <form:option value="NONE" label="--- Select ---" />
+					  <form:options items="${groupList}" 
+					  itemValue="id" itemLabel="name"/>
+				       </form:select>
+</div>
              </div>          
              </div>
+            
+         
              <br/>
           
   <div ><input type="submit" value="Add Person" class=" btn btn-primary"/></div>
@@ -69,7 +78,9 @@
                     <tbody>
                     <c:forEach items="${peopleList}" var="person">
                         <tr>
-                            <td>${person.lastName}, ${person.firstName}, ${person.money}</td>
+                            <td>${person.lastName}</td> 
+                            <td>${person.firstName}</td> 
+                            <td>${person.money}</td>
                             <td><form action="delete/${person.id}" method="post"><input type="submit" class="btn btn-danger btn-mini" value="Delete"/></form></td>
                         </tr>
                     </c:forEach>
